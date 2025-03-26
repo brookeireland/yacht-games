@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { categories } from "./categories";
 
 function App() {
   const [dice, setDice] = useState([6, 6, 6, 6, 6]);
@@ -10,6 +11,8 @@ function App() {
     false,
     false,
   ]);
+  const [score, setScore] = useState(0);
+  const [rollCount, setRollCount] = useState(3);
 
   function handleRollClick() {
     const diceDupe: number[] = structuredClone(dice);
@@ -20,6 +23,7 @@ function App() {
       }
     });
     setDice(diceDupe);
+    setRollCount(rollCount - 1);
   }
 
   function handleDieClick(index: number) {
@@ -43,7 +47,36 @@ function App() {
         })}
       </div>
 
-      <button onClick={() => handleRollClick()}>Roll!</button>
+      <button
+        onClick={() => {
+          handleRollClick();
+        }}
+        disabled={!!!rollCount}
+      >
+        Roll! {rollCount} left
+      </button>
+      <table>
+        <tbody>
+          {categories.map((cat) => {
+            return (
+              <tr>
+                <td>
+                  <button
+                    onClick={() => {
+                      if (rollCount === 0) setRollCount(3);
+                      cat.calculate();
+                    }}
+                  >
+                    {cat.name}
+                  </button>
+                </td>
+                <td>{cat.value}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <div>Total score: {score}</div>
     </>
   );
 }
