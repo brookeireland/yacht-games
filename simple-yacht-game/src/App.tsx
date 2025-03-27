@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
-import { bonusScore, categories, Category, totalScore } from "./categories";
-
-//save top score in cookie
+import {
+  bonusScore,
+  Calculator,
+  categoryCaluculators,
+  CategoryName,
+  defaultScores,
+  totalScore,
+} from "./categories";
+import { useLocalStorageNumber } from "./hooks";
 
 function App() {
+  const [scores, setScores] = useState(defaultScores);
   const [dice, setDice] = useState([6, 6, 6, 6, 6]);
-  const [isSelected, setIsSelected] = useState([
+  const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
     false,
     false,
     false,
@@ -14,6 +21,15 @@ function App() {
     false,
   ]);
   const [rollCount, setRollCount] = useState(3);
+
+  const [topScore, setTopScore] = useLocalStorageNumber("top score");
+
+  useEffect(() => {
+    const ts = totalScore(scores);
+    if (!topScore || ts > topScore) {
+      setTopScore(ts);
+    }
+  }, [topScore, scores]);
 
   function handleRollClick() {
     const diceDupe: number[] = structuredClone(dice);
@@ -29,13 +45,13 @@ function App() {
 
   function handleDieClick(index: number) {
     if (rollCount === 3) return;
-    const selectedDupe: boolean[] = structuredClone(isSelected);
+    const selectedDupe = [...isSelected];
     selectedDupe[index] = !selectedDupe[index];
     setIsSelected(selectedDupe);
   }
 
-  function handleSubmitClick(cat: Category) {
-    cat.value = cat.calculate(dice);
+  function handleSubmitClick(cat: CategoryName, calculate: Calculator) {
+    setScores({ ...scores, [cat]: calculate(dice) });
     setRollCount(3);
     setIsSelected([false, false, false, false, false]);
   }
@@ -48,6 +64,7 @@ function App() {
             <div
               className={isSelected[index] ? "selectedDice" : "dice"}
               onClick={() => handleDieClick(index)}
+              key={index.toString()}
             >
               {d}
             </div>
@@ -70,28 +87,29 @@ function App() {
             <td>Submitted</td>
             <td>Dice Score</td>
           </tr>
-          {categories.map((cat) => {
+          {categoryCaluculators().map(([cat, calculate]) => {
             return (
-              <tr>
+              <tr key={cat}>
                 <td>
                   <button
-                    disabled={cat.value !== null || rollCount === 3}
+                    disabled={scores[cat] !== null || rollCount === 3}
                     onClick={() => {
-                      handleSubmitClick(cat);
+                      handleSubmitClick(cat, calculate);
                     }}
                   >
-                    {cat.name}
+                    {cat}
                   </button>
                 </td>
-                <td>{cat.value}</td>
-                <td>{cat.calculate(dice)}</td>
+                <td>{scores[cat]}</td>
+                <td>{calculate(dice)}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
-      <div>Bonus Score Progress: {bonusScore()}/63</div>
-      <div>Total score: {totalScore()}</div>
+      <div>Bonus Score Progress: {bonusScore(scores)}/63</div>
+      <div>Total score: {totalScore(scores)}</div>
+      <div>Top score: {topScore}</div>
     </>
   );
 }

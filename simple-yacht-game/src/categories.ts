@@ -1,39 +1,79 @@
-//todo function type
-export type Category = { name: string; calculate: any; value: number | null };
-export const categories: Category[] = [
-  { name: "ones", calculate: calculateOnes, value: null },
-  { name: "twos", calculate: calculateTwos, value: null },
-  { name: "threes", calculate: calculateThrees, value: null },
-  { name: "fours", calculate: calculateFours, value: null },
-  { name: "fives", calculate: calculateFives, value: null },
-  { name: "sixes", calculate: calculateSixes, value: null },
-  { name: "3 of a kind", calculate: calculate3X, value: null },
-  { name: "4 of a kind", calculate: calculate4X, value: null },
-  { name: "full house", calculate: calculateFullHouse, value: null },
-  { name: "small straight", calculate: calculateSmallStraight, value: null },
-  { name: "large straight", calculate: calculateLargeStraight, value: null },
-  { name: "yacht", calculate: calculateYacht, value: null },
-  { name: "choice", calculate: calculateChoice, value: null },
+export type CategoryName = keyof typeof categories;
+export type CategoryScore = Readonly<Record<CategoryName, number | null>>;
+export type Calculator = (dice: number[]) => number;
+
+const categories = {
+  ones: calculateOnes,
+  twos: calculateTwos,
+  threes: calculateThrees,
+  fours: calculateFours,
+  fives: calculateFives,
+  sixes: calculateSixes,
+  "3 of a kind": calculate3X,
+  "4 of a kind": calculate4X,
+  "full house": calculateFullHouse,
+  "small straight": calculateSmallStraight,
+  "large straight": calculateLargeStraight,
+  yacht: calculateYacht,
+  choice: calculateChoice,
+};
+
+//make less duplicate
+const upperCategories: CategoryName[] = [
+  "ones",
+  "twos",
+  "threes",
+  "fours",
+  "fives",
+  "sixes",
 ];
 
-export function bonusScore() {
+export function categoryCaluculators(): [CategoryName, Calculator][] {
+  return Object.entries(categories) as [CategoryName, Calculator][];
+}
+
+export function allCategoryNames(): CategoryName[] {
+  return Object.keys(categories) as CategoryName[];
+}
+
+function mapValues<K extends string, I, O>(
+  obj: Record<K, I>,
+  fn: (k: K) => O
+): Record<K, O> {
+  return Object.fromEntries(
+    Object.keys(obj).map((k) => [k, fn(k as K)])
+  ) as Record<K, O>;
+}
+
+export function defaultScores(): CategoryScore {
+  return mapValues(categories, () => null);
+  // return Object.fromEntries(
+  //   allCategoryNames().map((name) => {
+  //     return [name, null];
+  //   })
+  // );
+}
+
+export function bonusScore(scores: CategoryScore) {
   let score = 0;
-  for (let i = 0; i < 6; i++) {
-    score = score + (categories[i].value || 0);
-  }
+  Object.entries(scores).map(([cat, s]) => {
+    if (upperCategories.includes(cat as CategoryName) && s != null) {
+      score = score + s;
+    }
+  });
 
   return score;
 }
 
-export function totalScore() {
+export function totalScore(scores: CategoryScore) {
   let score = 0;
-  categories.map((cat) => {
-    if (!!cat.value) {
-      score = score + cat.value;
+  Object.values(scores).map((s) => {
+    if (s !== null) {
+      score = score + s;
     }
   });
   //if top section score is greater than 63 get 35 bonus points
-  if (bonusScore() > 63) score = score + 35;
+  if (bonusScore(scores) > 63) score = score + 35;
 
   //todo add second yacht score
   return score;
