@@ -6,13 +6,14 @@ import {
   categoryCaluculators,
   CategoryName,
   defaultScores,
+  Dice,
   totalScore,
 } from "./categories";
 import { useLocalStorageNumber } from "./hooks";
 
 function App() {
   const [scores, setScores] = useState(defaultScores);
-  const [dice, setDice] = useState([6, 6, 6, 6, 6]);
+  const [dice, setDice] = useState<Dice>([6, 6, 6, 6, 6]);
   const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
     false,
     false,
@@ -32,7 +33,7 @@ function App() {
   }, [topScore, scores]);
 
   function handleRollClick() {
-    const diceDupe: number[] = structuredClone(dice);
+    const diceDupe = [...dice];
     dice.forEach((d, i) => {
       if (!isSelected[i]) {
         let num = Math.floor(Math.random() * 6) + 1;
