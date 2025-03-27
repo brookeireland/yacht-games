@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
-import { categories } from "./categories";
+import { bonusScore, categories, Category, totalScore } from "./categories";
+
+//save top score in cookie
 
 function App() {
   const [dice, setDice] = useState([6, 6, 6, 6, 6]);
@@ -11,7 +13,6 @@ function App() {
     false,
     false,
   ]);
-  const [score, setScore] = useState(0);
   const [rollCount, setRollCount] = useState(3);
 
   function handleRollClick() {
@@ -27,9 +28,16 @@ function App() {
   }
 
   function handleDieClick(index: number) {
+    if (rollCount === 3) return;
     const selectedDupe: boolean[] = structuredClone(isSelected);
     selectedDupe[index] = !selectedDupe[index];
     setIsSelected(selectedDupe);
+  }
+
+  function handleSubmitClick(cat: Category) {
+    cat.value = cat.calculate(dice);
+    setRollCount(3);
+    setIsSelected([false, false, false, false, false]);
   }
 
   return (
@@ -57,26 +65,33 @@ function App() {
       </button>
       <table>
         <tbody>
+          <tr>
+            <td> Category</td>
+            <td>Submitted</td>
+            <td>Dice Score</td>
+          </tr>
           {categories.map((cat) => {
             return (
               <tr>
                 <td>
                   <button
+                    disabled={cat.value !== null || rollCount === 3}
                     onClick={() => {
-                      if (rollCount === 0) setRollCount(3);
-                      cat.calculate();
+                      handleSubmitClick(cat);
                     }}
                   >
                     {cat.name}
                   </button>
                 </td>
                 <td>{cat.value}</td>
+                <td>{cat.calculate(dice)}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
-      <div>Total score: {score}</div>
+      <div>Bonus Score Progress: {bonusScore()}/63</div>
+      <div>Total score: {totalScore()}</div>
     </>
   );
 }
