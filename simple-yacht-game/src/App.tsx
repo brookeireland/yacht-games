@@ -34,12 +34,13 @@ function App() {
 
   function handleRollClick() {
     const diceDupe = [...dice];
-    dice.forEach((d, i) => {
+    for (let i = 0; i < dice.length; i++) {
       if (!isSelected[i]) {
         let num = Math.floor(Math.random() * 6) + 1;
         diceDupe[i] = num;
       }
-    });
+    }
+
     setDice(diceDupe);
     setRollCount(rollCount - 1);
   }
