@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "test": "tsx --test",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^19.0.0",
