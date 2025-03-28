@@ -134,7 +134,7 @@ function calculate4X(dice: Dice) {
   } else return 0;
 }
 function calculateFullHouse(dice: Dice) {
-  if (xOfaKind(dice, 2) && xOfaKind(dice, 3)) return 25;
+  if (xOfaKind(dice, 2) && xOfaKind(dice, 3) && !xOfaKind(dice, 4)) return 25;
   else return 0;
 }
 function calculateSmallStraight(dice: Dice) {
