@@ -1,0 +1,7 @@
+{
+  "name": "server-yacht-game",
+  "private": "true",
+  "scripts": {
+    "dev-all": "pnpm run --parallel -r dev"
+  }
+}
