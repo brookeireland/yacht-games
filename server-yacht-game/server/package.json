@@ -2,7 +2,7 @@
   "name": "server",
   "private": true,
   "scripts": {
-    "dev": "node --watch server"
+    "dev": "node --watch --experimental-sqlite server "
   },
   "dependencies": {
     "fastify": "^5.3.2",
