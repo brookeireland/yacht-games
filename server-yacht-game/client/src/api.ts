@@ -1,10 +1,3 @@
-async function fetchGet(url: string) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Request Failed: ${url} Status = ${response.status}`);
-  }
-  return await response.json();
-}
 async function fetchPost(url: string, body: any) {
   const response = await fetch(url, {
     method: "POST",
@@ -19,13 +12,13 @@ async function fetchPost(url: string, body: any) {
   return await response.json();
 }
 
-export async function fetchUsername(): Promise<string> {
-  const body = await fetchGet("/api/username");
+export async function readUsername(): Promise<string> {
+  const body = await fetchPost("/api/get-username", {});
   return body.username;
 }
 
-export async function sendUsername(value: string) {
-  await fetchPost("/api/username", {
+export async function writeUsername(value: string) {
+  await fetchPost("/api/set-username", {
     username: value,
   });
 }

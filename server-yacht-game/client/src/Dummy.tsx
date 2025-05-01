@@ -1,5 +1,5 @@
 import React from "react";
-import { sendUsername, fetchUsername } from "./api";
+import { readUsername, writeUsername } from "./api";
 
 export function Dummy() {
   return (
@@ -17,7 +17,7 @@ export function Dummy() {
 function Setter() {
   const [value, setValue] = React.useState("");
   const handleClick = async () => {
-    await sendUsername(value);
+    await writeUsername(value);
   };
   return (
     <>
@@ -35,7 +35,7 @@ function Setter() {
 function Getter() {
   const [username, setUsername] = React.useState("");
   const handleClick = async () => {
-    const val = await fetchUsername();
+    const val = await readUsername();
     setUsername(val);
   };
 

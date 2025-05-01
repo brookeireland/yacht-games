@@ -11,18 +11,13 @@ const fastify = require("fastify")({
   },
 });
 
-// Declare a route
-fastify.get("/api/hello", function handler(request, reply) {
-  reply.send({ hello: "world2" });
-});
 let username = "";
-fastify.post("/api/username", function handler(request, reply) {
+fastify.post("/api/set-username", function handler(request, reply) {
   username = request.body.username;
   reply.send({});
 });
-//curl http://localhost:3000/api/username -XPOST -H "content-type: application/json" -d "{\"username\": \"123\"}"
 
-fastify.get("/api/username", function handler(request, reply) {
+fastify.post("/api/get-username", function handler(request, reply) {
   reply.send({ username: username });
 });
 
