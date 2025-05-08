@@ -1,9 +1,9 @@
-const { DatabaseSync } = require("node:sqlite");
-
+import { DatabaseSync } from "node:sqlite";
+import fastify from "fastify";
 const db = new DatabaseSync("db.sqlite");
 
 // Require the framework and instantiate it
-const fastify = require("fastify")({
+const server = fastify({
   logger: {
     level: "warn",
     transport: {
@@ -15,22 +15,22 @@ const fastify = require("fastify")({
   },
 });
 
-fastify.post("/api/set-username", function handler(request, reply) {
+server.post("/api/set-username", function handler(request, reply) {
   const stmt = db.prepare("UPDATE username SET name = ? WHERE id = 0");
-  stmt.run(request.body.username);
+  stmt.run((request.body as any).username);
   reply.send({});
 });
 
-fastify.post("/api/get-username", function handler(request, reply) {
+server.post("/api/get-username", function handler(request, reply) {
   const stmt = db.prepare("SELECT name FROM username WHERE id = 0");
-  const row = stmt.get();
+  const row = stmt.get() as any;
   reply.send({ username: row.name });
 });
 
 // Run the server!
-fastify.listen({ port: 3000 }, (err) => {
+server.listen({ port: 3000 }, (err) => {
   if (err) {
-    fastify.log.error(err);
+    server.log.error(err);
     process.exit(1);
   }
 });

@@ -68,6 +68,13 @@ importers:
       pino-pretty:
         specifier: ^13.0.0
         version: 13.0.0
+    devDependencies:
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.3
+      typescript:
+        specifier: ~5.7.3
+        version: 5.7.3
 
 packages:
 

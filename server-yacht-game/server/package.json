@@ -2,10 +2,14 @@
   "name": "server",
   "private": true,
   "scripts": {
-    "dev": "node --watch --experimental-sqlite server "
+    "dev": "tsx watch --experimental-sqlite server "
   },
   "dependencies": {
     "fastify": "^5.3.2",
     "pino-pretty": "^13.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3",
+    "typescript": "~5.7.3"
   }
 }
