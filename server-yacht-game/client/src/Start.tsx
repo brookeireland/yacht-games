@@ -1,5 +1,5 @@
 import React from "react";
-import { writeUsername } from "./api";
+import { apiLogin } from "./api";
 
 export function Start({
   onSetUsername,
@@ -8,7 +8,7 @@ export function Start({
 }) {
   const [value, setValue] = React.useState("");
   const handleClick = async () => {
-    await writeUsername(value);
+    await apiLogin(value);
     onSetUsername(value);
   };
   return (
