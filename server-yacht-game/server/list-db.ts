@@ -1,5 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 
 const db = new DatabaseSync("db.sqlite");
-const stmt = db.prepare("SELECT rowid, * FROM user");
+let stmt = db.prepare("SELECT * FROM user");
+console.table(stmt.all());
+stmt = db.prepare("SELECT * FROM game");
 console.table(stmt.all());
