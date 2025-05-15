@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch --clear-screen=false --experimental-sqlite server ",
-    "init-db": "tsx --experimental-sqlite ./init-db"
+    "initdb": "tsx --experimental-sqlite ./init-db",
+    "listdb": "tsx --experimental-sqlite ./list-db",
+    "types": "tsc -b --watch --preserveWatchOutput"
   },
   "dependencies": {
     "fastify": "^5.3.2",

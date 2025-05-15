@@ -1,15 +1,16 @@
 import React from "react";
 import { apiLogin } from "./api";
+import { User } from "./types";
 
 export function Start({
-  onSetUsername,
+  onSetUser: onSetUser,
 }: {
-  onSetUsername: React.Dispatch<React.SetStateAction<string>>;
+  onSetUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 }) {
   const [value, setValue] = React.useState("");
   const handleClick = async () => {
-    await apiLogin(value);
-    onSetUsername(value);
+    const id = await apiLogin(value);
+    onSetUser({ id, name: value });
   };
   return (
     <>

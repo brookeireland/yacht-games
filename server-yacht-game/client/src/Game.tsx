@@ -10,8 +10,9 @@ import {
   totalScore,
 } from "./categories";
 import { useLocalStorageNumber } from "./hooks";
+import { User } from "./types";
 
-function Game() {
+function Game({ user }: { user: User }) {
   const [scores, setScores] = useState(defaultScores);
   const [dice, setDice] = useState<Dice>([6, 6, 6, 6, 6]);
   const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
@@ -23,6 +24,7 @@ function Game() {
   ]);
   const [rollCount, setRollCount] = useState(3);
   const [topScore, setTopScore] = useLocalStorageNumber("top score");
+  console.log({ user });
 
   useEffect(() => {
     const ts = totalScore(scores);
@@ -61,6 +63,8 @@ function Game() {
 
   return (
     <>
+      <div>Name: {user.name}</div>
+      <div>Id: {user.id}</div>
       <div className="diceBox">
         {dice.map((d, index) => {
           return (

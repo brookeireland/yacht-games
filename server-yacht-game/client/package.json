@@ -1,6 +1,5 @@
 {
-  "name": "simple-yacht-game",
-  "homepage": "http://brookeireland.github.io/simple-yacht-game",
+  "name": "server-yacht-game",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +10,8 @@
     "preview": "vite preview",
     "test": "tsx --test",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "types": "tsc -b --watch --preserveWatchOutput"
   },
   "dependencies": {
     "react": "^19.0.0",

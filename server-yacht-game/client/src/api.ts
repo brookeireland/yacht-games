@@ -12,8 +12,9 @@ async function fetchPost(url: string, body: any) {
   return await response.json();
 }
 
-export async function apiLogin(value: string) {
-  await fetchPost("/api/login", {
-    username: value,
+export async function apiLogin(username: string): Promise<number> {
+  const result = await fetchPost("/api/login", {
+    username,
   });
+  return result.id;
 }
