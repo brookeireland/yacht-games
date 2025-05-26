@@ -12,9 +12,26 @@ async function fetchPost(url: string, body: any) {
   return await response.json();
 }
 
-export async function apiLogin(username: string): Promise<number> {
+export async function apiLogin(username: string): Promise<any> {
   const result = await fetchPost("/api/login", {
     username,
   });
-  return result.id;
+  return result;
 }
+
+// - api for highest score
+export async function apiTopScore(
+  score: number,
+  username: string
+): Promise<number> {
+  const result = await fetchPost("/api/top-score", {
+    score,
+    username,
+  });
+  return result;
+}
+
+// - API for new game
+// - API for roll dice
+// - API for scoring dice
+// - api for game history

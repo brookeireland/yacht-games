@@ -9,8 +9,8 @@ import {
   Dice,
   totalScore,
 } from "./categories";
-import { useLocalStorageNumber } from "./hooks";
 import { User } from "./types";
+import { apiTopScore } from "./api";
 
 function Game({ user }: { user: User }) {
   const [scores, setScores] = useState(defaultScores);
@@ -23,13 +23,15 @@ function Game({ user }: { user: User }) {
     false,
   ]);
   const [rollCount, setRollCount] = useState(3);
-  const [topScore, setTopScore] = useLocalStorageNumber("top score");
+  const [topScore, setTopScore] = useState(user.topScore || 0);
   console.log({ user });
 
   useEffect(() => {
     const ts = totalScore(scores);
     if (!topScore || ts > topScore) {
       setTopScore(ts);
+      //todo
+      apiTopScore(ts, user.name);
     }
   }, [topScore, scores]);
 

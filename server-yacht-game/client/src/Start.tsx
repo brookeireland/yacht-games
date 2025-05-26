@@ -9,8 +9,8 @@ export function Start({
 }) {
   const [value, setValue] = React.useState("");
   const handleClick = async () => {
-    const id = await apiLogin(value);
-    onSetUser({ id, name: value });
+    const { id, score } = await apiLogin(value);
+    onSetUser({ id, name: value, topScore: score });
   };
   return (
     <>

@@ -22,18 +22,29 @@ const server = fastify({
 // });
 
 server.post("/api/login", function handler(request, reply) {
-  let stmt = db.prepare(`SELECT rowid FROM user WHERE name = ?`);
+  let stmt = db.prepare(`SELECT rowid, top_score FROM user WHERE name = ?`);
   const username = (request.body as any).username;
   const row = stmt.get(username);
   if (row) {
-    return { id: row.id };
+    return { id: row.rowid, score: row.top_score };
   }
   stmt = db.prepare("INSERT OR IGNORE INTO user(name) VALUES(?)");
   const result = stmt.run(username);
   if (result.changes) {
-    return { id: result.lastInsertRowid };
+    return { id: result.lastInsertRowid, score: 0 };
   }
   throw new Error("Failed to exist and insert?", { cause: username });
+});
+
+server.post("/api/top-score", function handler(request, reply) {
+  const score = (request.body as any).score;
+  const username = (request.body as any).username;
+  const stmt = db.prepare(`UPDATE user SET top_score = ? WHERE name = ?`);
+  const result = stmt.run(score, username);
+  if (result.changes) {
+    return;
+  }
+  throw new Error("Failed to insert top score", { cause: score });
 });
 
 // Run the server!
