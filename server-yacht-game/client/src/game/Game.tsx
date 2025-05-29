@@ -8,9 +8,9 @@ import {
   defaultScores,
   Dice,
   totalScore,
-} from "./categories";
-import { User } from "./types";
-import { apiTopScore } from "./api";
+} from "../categories";
+import { User } from "../types";
+import { apiTopScore } from "../api";
 
 function Game({ user }: { user: User }) {
   const [scores, setScores] = useState(defaultScores);

@@ -19,6 +19,13 @@ export async function apiLogin(username: string): Promise<any> {
   return result;
 }
 
+export async function apiNewGame(id: number): Promise<any> {
+  const result = await fetchPost("api/new-game", {
+    id,
+  });
+  return result;
+}
+
 // - api for highest score
 export async function apiTopScore(
   score: number,

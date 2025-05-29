@@ -1,6 +1,6 @@
 import React from "react";
-import { apiLogin } from "./api";
-import { User } from "./types";
+import { apiLogin } from "../api";
+import { User } from "../types";
 
 export function Start({
   onSetUser: onSetUser,
