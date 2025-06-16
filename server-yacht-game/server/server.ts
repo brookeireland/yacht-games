@@ -47,6 +47,7 @@ server.post("/api/top-score", function handler(request, reply) {
   throw new Error("Failed to insert top score", { cause: score });
 });
 
+//Create New Game
 server.post("/api/new-game", function handler(request, reply) {
   const userid = (request.body as any).id;
   const stmt = db.prepare(`INSERT INTO game(userid, data) VALUES(?,?)`);
@@ -54,8 +55,13 @@ server.post("/api/new-game", function handler(request, reply) {
   return null;
 });
 
-//endpoint to get list of games
-//endpoint to create new game
+//Get Game List
+server.post("/api/game-list", function handler(request, reply) {
+  const userid = (request.body as any).id;
+  const stmt = db.prepare(`SELECT data, rowid FROM game WHERE userid = ?`);
+  const result = stmt.all(userid);
+  return result;
+});
 
 // Run the server!
 server.listen({ port: 3000 }, (err) => {

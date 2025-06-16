@@ -19,8 +19,16 @@ export async function apiLogin(username: string): Promise<any> {
   return result;
 }
 
-export async function apiNewGame(id: number): Promise<any> {
-  const result = await fetchPost("api/new-game", {
+export async function apiNewGame(id: number): Promise<void> {
+  await fetchPost("/api/new-game", {
+    id,
+  });
+}
+
+export async function apiGameList(
+  id: number
+): Promise<Record<string, string>[]> {
+  const result = await fetchPost("/api/game-list", {
     id,
   });
   return result;
