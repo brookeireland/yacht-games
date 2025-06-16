@@ -1,13 +1,26 @@
 import { useState } from "react";
-// import Game from "./game/Game";
+import Board from "./game/Game";
 
 import { Start } from "./login/Start";
-import { User } from "./types";
+import { Game, User } from "./types";
 import { GameList } from "./GameList";
 
 function App() {
   const [user, setUser] = useState<User>();
-  return <>{user ? <GameList user={user} /> : <Start onSetUser={setUser} />}</>;
+  const [game, setGame] = useState<Game>();
+  return (
+    <>
+      {user ? (
+        game ? (
+          <Board user={user} />
+        ) : (
+          <GameList user={user} onSetGame={setGame} />
+        )
+      ) : (
+        <Start onSetUser={setUser} />
+      )}
+    </>
+  );
 }
 
 export default App;

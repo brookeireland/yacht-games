@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Game.css";
+import "./Board.css";
 import {
   bonusScore,
   Calculator,
@@ -12,7 +12,7 @@ import {
 import { User } from "../types";
 import { apiTopScore } from "../api";
 
-function Game({ user }: { user: User }) {
+function Board({ user }: { user: User }) {
   const [scores, setScores] = useState(defaultScores);
   const [dice, setDice] = useState<Dice>([6, 6, 6, 6, 6]);
   const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
@@ -127,4 +127,4 @@ function Game({ user }: { user: User }) {
   );
 }
 
-export default Game;
+export default Board;
