@@ -4,6 +4,7 @@ import Board from "./game/Board";
 import { Start } from "./login/Start";
 import { Game, User } from "./types";
 import { GameList } from "./GameList";
+import { ErrorBoundary } from "./lib/ErrorBoundary";
 
 function App() {
   const [user, setUser] = useState<User>();
@@ -12,7 +13,9 @@ function App() {
     <>
       {user ? (
         game ? (
-          <Board user={user} />
+          <ErrorBoundary>
+            <Board user={user} />
+          </ErrorBoundary>
         ) : (
           <GameList user={user} onSetGame={setGame} />
         )
