@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Board from "./game/Game";
+import Board from "./game/Board";
 
 import { Start } from "./login/Start";
 import { Game, User } from "./types";

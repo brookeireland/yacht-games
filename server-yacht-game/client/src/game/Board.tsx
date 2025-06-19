@@ -12,7 +12,12 @@ import {
 import { User } from "../types";
 import { apiTopScore } from "../api";
 
+type BoardData = {
+  rollCount: number;
+};
+
 function Board({ user }: { user: User }) {
+  const [data, setData] = useState<BoardData>({ rollCount: 3 });
   const [scores, setScores] = useState(defaultScores);
   const [dice, setDice] = useState<Dice>([6, 6, 6, 6, 6]);
   const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
@@ -22,7 +27,6 @@ function Board({ user }: { user: User }) {
     false,
     false,
   ]);
-  const [rollCount, setRollCount] = useState(3);
   const [topScore, setTopScore] = useState(user.topScore || 0);
   console.log({ user });
 
@@ -45,11 +49,13 @@ function Board({ user }: { user: User }) {
     }
 
     setDice(diceDupe);
-    setRollCount(rollCount - 1);
+    setData((prev) => {
+      return { ...prev, rollCount: prev.rollCount - 1 };
+    });
   }
 
   function handleDieClick(index: number) {
-    if (rollCount === 3) return;
+    if (data.rollCount === 3) return;
     const selectedDupe = [...isSelected];
     selectedDupe[index] = !selectedDupe[index];
     setIsSelected(selectedDupe);
@@ -59,12 +65,26 @@ function Board({ user }: { user: User }) {
     let score = calculate(dice);
     if (scores["yacht"] !== null) score += 50;
     setScores({ ...scores, [cat]: score });
-    setRollCount(3);
+    setData((prev) => {
+      return { ...prev, rollCount: 3 };
+    });
     setIsSelected([false, false, false, false, false]);
+  }
+  function buildDebugOutput() {
+    return JSON.stringify(
+      { data, scores, dice, isSelected, topScore },
+      null,
+      2
+    );
   }
 
   return (
     <>
+      <pre
+        style={{ position: "absolute", top: 0, left: 10, textAlign: "left" }}
+      >
+        {buildDebugOutput()}
+      </pre>
       <div>Name: {user.name}</div>
       <div>Id: {user.id}</div>
       <div className="diceBox">
@@ -85,9 +105,9 @@ function Board({ user }: { user: User }) {
         onClick={() => {
           handleRollClick();
         }}
-        disabled={!!!rollCount}
+        disabled={!!!data.rollCount}
       >
-        Roll! {rollCount} left
+        Roll! {data.rollCount} left
       </button>
       <table>
         <tbody>
@@ -101,7 +121,7 @@ function Board({ user }: { user: User }) {
               <tr key={cat}>
                 <td>
                   <button
-                    disabled={scores[cat] !== null || rollCount === 3}
+                    disabled={scores[cat] !== null || data.rollCount === 3}
                     onClick={() => {
                       handleSubmitClick(cat, calculate);
                     }}
@@ -111,7 +131,7 @@ function Board({ user }: { user: User }) {
                 </td>
                 <td>{scores[cat]}</td>
                 <td>
-                  {rollCount === 3
+                  {data.rollCount === 3
                     ? null
                     : calculate(dice, scores["yacht"] !== null)}
                 </td>
