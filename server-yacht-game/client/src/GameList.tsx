@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { apiGameList, apiNewGame } from "./api";
 import { GameListResponse, User } from "./types";
 import { useAsyncEffect } from "./lib/useAsyncEffect";

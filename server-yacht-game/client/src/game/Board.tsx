@@ -14,12 +14,15 @@ import { apiTopScore } from "../api";
 
 type BoardData = {
   rollCount: number;
+  dice: Dice;
 };
 
 function Board({ user }: { user: User }) {
-  const [data, setData] = useState<BoardData>({ rollCount: 3 });
+  const [data, setData] = useState<BoardData>({
+    rollCount: 3,
+    dice: [6, 6, 6, 6, 6],
+  });
   const [scores, setScores] = useState(defaultScores);
-  const [dice, setDice] = useState<Dice>([6, 6, 6, 6, 6]);
   const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
     false,
     false,
@@ -40,17 +43,15 @@ function Board({ user }: { user: User }) {
   }, [topScore, scores]);
 
   function handleRollClick() {
-    const diceDupe = [...dice];
-    for (let i = 0; i < dice.length; i++) {
-      if (!isSelected[i]) {
-        let num = Math.floor(Math.random() * 6) + 1;
-        diceDupe[i] = num;
-      }
-    }
-
-    setDice(diceDupe);
     setData((prev) => {
-      return { ...prev, rollCount: prev.rollCount - 1 };
+      const dice = [...prev.dice];
+      for (let i = 0; i < prev.dice.length; i++) {
+        if (!isSelected[i]) {
+          let num = Math.floor(Math.random() * 6) + 1;
+          dice[i] = num;
+        }
+      }
+      return { ...prev, rollCount: prev.rollCount - 1, dice: dice };
     });
   }
 
@@ -62,7 +63,7 @@ function Board({ user }: { user: User }) {
   }
 
   function handleSubmitClick(cat: CategoryName, calculate: Calculator) {
-    let score = calculate(dice);
+    let score = calculate(data.dice);
     if (scores["yacht"] !== null) score += 50;
     setScores({ ...scores, [cat]: score });
     setData((prev) => {
@@ -71,11 +72,7 @@ function Board({ user }: { user: User }) {
     setIsSelected([false, false, false, false, false]);
   }
   function buildDebugOutput() {
-    return JSON.stringify(
-      { data, scores, dice, isSelected, topScore },
-      null,
-      2
-    );
+    return JSON.stringify({ data, scores, isSelected, topScore }, null, 2);
   }
 
   return (
@@ -88,7 +85,7 @@ function Board({ user }: { user: User }) {
       <div>Name: {user.name}</div>
       <div>Id: {user.id}</div>
       <div className="diceBox">
-        {dice.map((d, index) => {
+        {data.dice.map((d, index) => {
           return (
             <div
               className={isSelected[index] ? "selectedDice" : "dice"}
@@ -133,7 +130,7 @@ function Board({ user }: { user: User }) {
                 <td>
                   {data.rollCount === 3
                     ? null
-                    : calculate(dice, scores["yacht"] !== null)}
+                    : calculate(data.dice, scores["yacht"] !== null)}
                 </td>
               </tr>
             );
