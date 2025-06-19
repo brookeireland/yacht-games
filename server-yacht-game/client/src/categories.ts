@@ -1,7 +1,6 @@
+import { Calculator, CategoryScore, Dice } from "./types";
+
 export type CategoryName = keyof typeof categories;
-export type CategoryScore = Readonly<Record<CategoryName, number | null>>;
-export type Calculator = (dice: Dice, yacht?: boolean) => number;
-export type Dice = readonly number[];
 
 export const categories = {
   ones: calculateOnes,

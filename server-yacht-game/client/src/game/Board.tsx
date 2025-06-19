@@ -2,40 +2,37 @@ import { useEffect, useState } from "react";
 import "./Board.css";
 import {
   bonusScore,
-  Calculator,
   categoryCaluculators,
   CategoryName,
   defaultScores,
-  Dice,
   totalScore,
 } from "../categories";
-import { User } from "../types";
+import { BoardData, Calculator, GameListItem, User } from "../types";
 import { apiTopScore } from "../api";
 
-type BoardData = {
-  rollCount: number;
-  dice: Dice;
-  isSelected: ReadonlyArray<boolean>;
-};
-
-function Board({ user }: { user: User }) {
+function Board({ user, game }: { user: User; game: GameListItem }) {
   const [data, setData] = useState<BoardData>({
+    //@ts-ignore
     rollCount: 3,
+    //@ts-ignore
     dice: [6, 6, 6, 6, 6],
+    //@ts-ignore
     isSelected: [false, false, false, false, false],
+    //@ts-ignore
+    scores: defaultScores(),
+    ...game.data,
   });
-  const [scores, setScores] = useState(defaultScores);
   const [topScore, setTopScore] = useState(user.topScore || 0);
   console.log({ user });
 
   useEffect(() => {
-    const ts = totalScore(scores);
+    const ts = totalScore(data.scores);
     if (!topScore || ts > topScore) {
       setTopScore(ts);
       //todo
       apiTopScore(ts, user.name);
     }
-  }, [topScore, scores]);
+  }, [topScore, data.scores]);
 
   function handleRollClick() {
     setData((prev) => {
@@ -61,19 +58,19 @@ function Board({ user }: { user: User }) {
   }
 
   function handleSubmitClick(cat: CategoryName, calculate: Calculator) {
-    let score = calculate(data.dice);
-    if (scores["yacht"] !== null) score += 50;
-    setScores({ ...scores, [cat]: score });
     setData((prev) => {
+      let score = calculate(data.dice);
+      if (prev.scores["yacht"] !== null) score += 50;
       return {
         ...prev,
         rollCount: 3,
         isSelected: [false, false, false, false, false],
+        scores: { ...prev.scores, [cat]: score },
       };
     });
   }
   function buildDebugOutput() {
-    return JSON.stringify({ data, scores, topScore }, null, 2);
+    return JSON.stringify(data, null, 2);
   }
 
   return (
@@ -119,7 +116,7 @@ function Board({ user }: { user: User }) {
               <tr key={cat}>
                 <td>
                   <button
-                    disabled={scores[cat] !== null || data.rollCount === 3}
+                    disabled={data.scores[cat] !== null || data.rollCount === 3}
                     onClick={() => {
                       handleSubmitClick(cat, calculate);
                     }}
@@ -127,19 +124,19 @@ function Board({ user }: { user: User }) {
                     {cat}
                   </button>
                 </td>
-                <td>{scores[cat]}</td>
+                <td>{data.scores[cat]}</td>
                 <td>
                   {data.rollCount === 3
                     ? null
-                    : calculate(data.dice, scores["yacht"] !== null)}
+                    : calculate(data.dice, data.scores["yacht"] !== null)}
                 </td>
               </tr>
             );
           })}
         </tbody>
       </table>
-      <div>Bonus Score (35 points) Progress: {bonusScore(scores)}/63</div>
-      <div>Total score: {totalScore(scores)}</div>
+      <div>Bonus Score (35 points) Progress: {bonusScore(data.scores)}/63</div>
+      <div>Total score: {totalScore(data.scores)}</div>
       <div>Top score: {topScore}</div>
     </>
   );
