@@ -15,21 +15,16 @@ import { apiTopScore } from "../api";
 type BoardData = {
   rollCount: number;
   dice: Dice;
+  isSelected: ReadonlyArray<boolean>;
 };
 
 function Board({ user }: { user: User }) {
   const [data, setData] = useState<BoardData>({
     rollCount: 3,
     dice: [6, 6, 6, 6, 6],
+    isSelected: [false, false, false, false, false],
   });
   const [scores, setScores] = useState(defaultScores);
-  const [isSelected, setIsSelected] = useState<ReadonlyArray<boolean>>([
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
   const [topScore, setTopScore] = useState(user.topScore || 0);
   console.log({ user });
 
@@ -46,7 +41,7 @@ function Board({ user }: { user: User }) {
     setData((prev) => {
       const dice = [...prev.dice];
       for (let i = 0; i < prev.dice.length; i++) {
-        if (!isSelected[i]) {
+        if (!prev.isSelected[i]) {
           let num = Math.floor(Math.random() * 6) + 1;
           dice[i] = num;
         }
@@ -57,9 +52,12 @@ function Board({ user }: { user: User }) {
 
   function handleDieClick(index: number) {
     if (data.rollCount === 3) return;
-    const selectedDupe = [...isSelected];
-    selectedDupe[index] = !selectedDupe[index];
-    setIsSelected(selectedDupe);
+
+    setData((prev) => {
+      const isSelected = [...prev.isSelected];
+      isSelected[index] = !isSelected[index];
+      return { ...prev, isSelected };
+    });
   }
 
   function handleSubmitClick(cat: CategoryName, calculate: Calculator) {
@@ -67,12 +65,15 @@ function Board({ user }: { user: User }) {
     if (scores["yacht"] !== null) score += 50;
     setScores({ ...scores, [cat]: score });
     setData((prev) => {
-      return { ...prev, rollCount: 3 };
+      return {
+        ...prev,
+        rollCount: 3,
+        isSelected: [false, false, false, false, false],
+      };
     });
-    setIsSelected([false, false, false, false, false]);
   }
   function buildDebugOutput() {
-    return JSON.stringify({ data, scores, isSelected, topScore }, null, 2);
+    return JSON.stringify({ data, scores, topScore }, null, 2);
   }
 
   return (
@@ -88,7 +89,7 @@ function Board({ user }: { user: User }) {
         {data.dice.map((d, index) => {
           return (
             <div
-              className={isSelected[index] ? "selectedDice" : "dice"}
+              className={data.isSelected[index] ? "selectedDice" : "dice"}
               onClick={() => handleDieClick(index)}
               key={index.toString()}
             >
