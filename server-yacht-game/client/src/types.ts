@@ -9,3 +9,8 @@ export type Game = {
   userId: number;
   data: JSON;
 };
+
+export type GameListResponse = {
+  data: any;
+  rowid: number;
+}[];

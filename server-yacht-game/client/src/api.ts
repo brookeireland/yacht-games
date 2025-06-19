@@ -1,3 +1,5 @@
+import { GameListResponse } from "./types";
+
 async function fetchPost(url: string, body: any) {
   const response = await fetch(url, {
     method: "POST",
@@ -25,9 +27,7 @@ export async function apiNewGame(id: number): Promise<void> {
   });
 }
 
-export async function apiGameList(
-  id: number
-): Promise<Record<string, string>[]> {
+export async function apiGameList(id: number): Promise<GameListResponse> {
   const result = await fetchPost("/api/game-list", {
     id,
   });

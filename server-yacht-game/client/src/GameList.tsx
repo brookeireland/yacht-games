@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { apiGameList, apiNewGame } from "./api";
-import { User } from "./types";
+import { GameListResponse, User } from "./types";
+import { useAsyncEffect } from "./lib/useAsyncEffect";
 
 export function GameList({
   user,
@@ -9,14 +10,12 @@ export function GameList({
   user: User;
   onSetGame: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  // const fetchGameList = async () => {
-  //   const list = await apiGameList(user.id);
-  //   return list;
-  // };
-  // useEffect(() => {
-  //   let list = fetchGameList();
-  // });
-  const [gameList, setGameList] = React.useState<Record<string, string>[]>([]);
+  useAsyncEffect(async () => {
+    let list = await apiGameList(user.id);
+    setGameList(list);
+  }, []);
+
+  const [gameList, setGameList] = React.useState<GameListResponse>([]);
   const handleClick = async () => {
     await apiNewGame(user.id);
     const list = await apiGameList(user.id);
@@ -30,7 +29,9 @@ export function GameList({
     <>
       Hello {user.name}
       {gameList.map((val) => (
-        <li onClick={() => handleGameClick(val)}>{val.data}</li>
+        <li onClick={() => handleGameClick(val)}>
+          {val.rowid} - {val.data}
+        </li>
       ))}
       <button
         onClick={() => {
